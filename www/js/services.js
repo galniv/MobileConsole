@@ -37,7 +37,7 @@ angular.module('app.services', [])
     return User;
 })
 
-.factory('UserService', function ($kinvey, User) {
+.factory('UserService', function ($kinvey, $q, User) {
     var currentUser = null;
 
     return {
@@ -61,15 +61,18 @@ angular.module('app.services', [])
          * @returns {*}
          */
         login: function () {
+            if ($kinvey.User.getActiveUser()) {
+              return $q.resolve();
+            }
+
             //Kinvey login starts
             var promise = $kinvey.User.loginWithMIC('http://localhost:8100/landing');
 
             promise.then(function (response) {
-              console.log("Response is:", response)
                 return User.build(response);
             }, function (error) {
                 //Kinvey login finished with error
-                console.log("Error login " + error.description);
+                console.log("Error login " + error.toString());
             });
 
             return promise;
