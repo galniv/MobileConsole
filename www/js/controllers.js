@@ -2,66 +2,16 @@ angular.module('app.controllers', [])
   
 .controller('appsCtrl', ['$scope', '$kinvey', '$state', function($scope, $kinvey, $state) {
   $scope.openAppDetails = function(app) {
-    console.log("Sending?", app)
     $state.go('menu.appInformation', { app: app });
   };
 
   var appCollection = $kinvey.DataStore.getInstance('apps');
 
   if (!$scope.apps) {
-    console.log('finding apps!');
-    // $scope.apps = [{
-    //     "name": "MyApp",
-    //     "owner": "25980a1bd010462c894afbe2fac9a78e",
-    //     "schemaVersion": 2,
-    //     "pendingOwner": "test-64148689fa694cf29c5dcefc2a308e3a@kinvey.com",
-    //     "environments": [
-    //       {
-    //         "id": "kid_Z1DpmAlrCg",
-    //         "app": "39cc389ef7304e04b777c5d77e07a80a",
-    //         "name": "Development",
-    //         "appSecret": "7b371b4a7b61454082a08000367344f2",
-    //         "masterSecret": "43da143655ad400394231497be55bf10",
-    //         "apiVersion": 3,
-    //         "numberOfCollaborators": 0,
-    //         "numberOfAdmins": 1
-    //       },
-    //       {
-    //         "id": "kid_Ajd9Xkef",
-    //         "app": "39cc389ef7304e04b777c5d77e07a80a",
-    //         "name": "Production",
-    //         "appSecret": "7b371b4a7b61454082a08000367344f2",
-    //         "masterSecret": "43da143655ad400394231497be55bf10",
-    //         "apiVersion": 3,
-    //         "numberOfCollaborators": 0,
-    //         "numberOfAdmins": 1
-    //       }
-    //     ],
-    //     "id": "39cc389ef7304e04b777c5d77e07a80a",
-    //     "paymentMethod": "9236a358b88f45fd8af86222c32adf24",
-    //     "plan": {
-    //       "backup": true,
-    //       "bl": {
-    //         "timeout": 20000
-    //       },
-    //       "collaborators": true,
-    //       "datalinks": true,
-    //       "email": true,
-    //       "environments": 10,
-    //       "level": "enterprise",
-    //       "push": true,
-    //       "support": {
-    //         "debug": true,
-    //         "email": true,
-    //         "phone": true
-    //       }
-    //     }
-    //   }
-    // ];
-    // return
-    return appCollection.find().then(function(result) {
+    return appCollection.find(null, { useDeltaFetch: false }).then(function(result) {
       // The entities fetched from the cache
       $scope.apps = result.cache;
+      $scope.$digest();
 
       // Return the promise for fetching the entities from the backend
       return result.networkPromise;
@@ -69,7 +19,8 @@ angular.module('app.controllers', [])
       // The entites fetched from the backend. Any entities that do not already exist in your cache
       // or contain changes from what is stored in the cache are saved to the cache for
       // furure fetches.
-      $scope.apps = $scope.apps.concat(entities);
+      $scope.apps = entities;
+      $scope.$digest();
     }).catch(function(error) {
       console.log("Error fetching apps!", error)
     });
@@ -81,6 +32,7 @@ angular.module('app.controllers', [])
           console.log('Sign-In');
 
           UserService.login().then(function (response) {
+                console.log("Successful login!")
                   //Kinvey login finished with success
                   $scope.submittedError = false;
                   $state.go('menu.mobileConsole');

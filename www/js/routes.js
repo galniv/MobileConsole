@@ -1,15 +1,22 @@
 angular.module('app.routes', [])
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $kinveyProvider) {
+
+
+  $kinveyProvider.init({
+    appKey: 'kid_-1euTsyZMb',
+    appSecret: 'd51097b0a1bb44c4890af826bf303907'
+  });
+
+  // Kinvey initialization finished with success
+  console.log("Kinvey init with success");
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
-  
-
+   
   .state('apps', {
     url: '/apps',
     templateUrl: 'templates/apps.html',

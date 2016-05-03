@@ -62,6 +62,7 @@ angular.module('app.services', [])
          */
         login: function () {
             if ($kinvey.User.getActiveUser()) {
+              console.log("I already have an active user")
               return $q.resolve();
             }
 

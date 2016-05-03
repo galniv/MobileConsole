@@ -20,13 +20,6 @@ angular.module('app', ['ionic', 'kinvey', 'app.controllers', 'app.routes', 'app.
       StatusBar.styleDefault();
     }
 
-    $kinvey.init({
-      appKey: 'kid_-1euTsyZMb',
-      appSecret: 'd51097b0a1bb44c4890af826bf303907'
-    });
-  
-    // Kinvey initialization finished with success
-    console.log("Kinvey init with success");
     determineBehavior($kinvey, $state, $rootScope, UserService);
 
     // setup the stateChange listener
