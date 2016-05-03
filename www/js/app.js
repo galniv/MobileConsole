@@ -20,7 +20,7 @@ angular.module('app', ['ionic', 'kinvey', 'app.controllers', 'app.routes', 'app.
       StatusBar.styleDefault();
     }
 
-    var promise = $kinvey.init({
+    $kinvey.init({
       appKey: 'kid_-1euTsyZMb',
       appSecret: 'd51097b0a1bb44c4890af826bf303907'
     });
