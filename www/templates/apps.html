@@ -7,11 +7,11 @@
             </label>
         </form>
         <ion-list style="">
-            <ion-item ng-repeat="app in apps" style="" ui-sref="menu.appInformation" class="item-thumbnail-left">
+            <ion-item ng-repeat="app in apps" style="" ng-click="openAppDetails(app)" class="item-thumbnail-left apps">
                 <img src="img/5PCFYqCYT5UQki5eTPq7_kinvey-guilloche-seal_blue_200.png">
-                <h2>{{app.name}}</h2>
+                <div class="appName">{{app.name}}</div>
                 <ul>
-                    <li ng-repeat="environment in app.environments">{{environment.name}}</li>
+                    <li ng-repeat="environment in app.environments" class="environmentName">{{environment.name}}</li>
                 </ul>
             </ion-item>
         </ion-list>

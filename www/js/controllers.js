@@ -1,6 +1,11 @@
 angular.module('app.controllers', [])
   
-.controller('appsCtrl', ['$scope', '$kinvey', function($scope, $kinvey) {
+.controller('appsCtrl', ['$scope', '$kinvey', '$state', function($scope, $kinvey, $state) {
+  $scope.openAppDetails = function(app) {
+    console.log("Sending?", app)
+    $state.go('menu.appInformation', { app: app });
+  };
+
   var appCollection = $kinvey.DataStore.getInstance('apps');
 
   if (!$scope.apps) {
@@ -104,8 +109,14 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('appInformationCtrl', function($scope) {
+.controller('appInformationCtrl', function($scope, $stateParams) {
+  $scope.app = $stateParams.app;
 
+  var totalCollaborators = 0;
+  for (var i=0; i < $scope.app.environments.length; i++) {
+    totalCollaborators += $scope.app.environments[i].numberOfCollaborators;
+  }
+  $scope.totalCollaborators = totalCollaborators;
 })
    
 .controller('environmentDashboardCtrl', function($scope) {

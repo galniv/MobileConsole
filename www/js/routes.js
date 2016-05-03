@@ -65,6 +65,9 @@ angular.module('app.routes', [])
         templateUrl: 'templates/appInformation.html',
         controller: 'appInformationCtrl'
       }
+    },
+    params: {
+      app: null
     }
   })
 

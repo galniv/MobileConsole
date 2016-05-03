@@ -21,3 +21,19 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
+.apps {
+  .appName {
+    font-weight: bold;
+    padding-bottom: 3px;
+  }
+
+  .environmentName {
+    font-size: 15px;
+    color: grey;
+  }
+}
+
+.plan-level {
+  font-weight: bold;
+  text-transform: capitalize;
+}

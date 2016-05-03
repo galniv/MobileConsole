@@ -1,29 +1,25 @@
 <ion-view style="" id="page9" title="App information">
     <ion-content class="has-header" padding="true">
-        <h1 style="color: rgb(0, 0, 0);" id="appInformation-heading3">App name</h1>
+        <h1 style="color: rgb(0, 0, 0);" id="appInformation-heading3">{{ app.name }}</h1>
         <div style="width: 300px; height: 4px;" class="spacer"></div>
         <h3 style="color: rgb(0, 0, 0);" id="appInformation-heading1">Environments</h3>
         <ion-list style="">
-            <ion-item style="" ui-sref="menu.environmentDashboard">Development</ion-item>
-            <ion-item style="">Staging</ion-item>
-            <ion-item style="">Production</ion-item>
+            <ion-item ng-repeat="environment in app.environments" style="" ui-sref="menu.environmentDashboard">{{ environment.name }}</ion-item>
         </ion-list>
         <div style="width: 300px; height: 11px;" class="spacer"></div>
         <h3 style="color: rgb(0, 0, 0);" id="appInformation-heading4">Ownership</h3>
-        <div style="">email@provider.com</div>
+        <div style="">{{ app.owner }}</div>
         <div style="width: 300px; height: 11px;" class="spacer"></div>
         <h3 style="color: rgb(0, 0, 0);" id="appInformation-heading2">Details</h3>
         <div style="">Plan type:
-            <b>Enterprise</b>
+            <span class="plan-level">{{ app.plan.level }}</span>
             <br>
-            <ul style="padding-left:10px; color:grey
-
-">
-                <li>1 of 1 environment</li>
-                <li>0 of 0 collaborators</li>
-                <li>Data Links Disabled</li>
-                <li>Auth Links Disabled</li>
-                <li>2000 ms script timeout</li>
+            <ul style="padding-left:10px; color:grey">
+                <li>{{ app.environments.length }} of {{ app.plan.environments }} environments</li>
+                <li>{{ totalCollaborators }} of {{ isNumber(app.plan.collaborators) ? app.plan.collaborators : "unlimited" }} collaborators</li>
+                <li>Data Links {{ app.plan.datalinks ? "Enabled" : "Disabled" }}</li>
+                <li>Auth Links {{ app.plan.authlinks ? "Enabled" : "Disabled" }}</li>
+                <li>{{ app.plan.bl.timeout }} ms script timeout</li>
                 <li>External BL support</li>
             </ul>
         </div>

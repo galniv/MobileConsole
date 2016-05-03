@@ -20688,12 +20688,12 @@
 	};
 	Object.freeze(TransactionMode);
 
-	if (typeof window !== 'undefined') {
-	  __webpack_require__(439);
-	  global.shimIndexedDB.__useShim();
-	}
+	// if (typeof window !== 'undefined') {
+	//   __webpack_require__(439);
+	//   global.shimIndexedDB.__useShim();
+	// }
 
-	var indexedDB = global.shimIndexedDB || global.indexedDB || global.mozIndexedDB || global.webkitIndexedDB || global.msIndexedDB;
+	var indexedDB = global.indexedDB || global.mozIndexedDB || global.webkitIndexedDB || global.msIndexedDB;
 
 	/**
 	 * @private
