@@ -147,7 +147,7 @@ angular.module('app.controllers', [])
                   //Kinvey logout finished with success
                   console.log("user logout");
                   $kinvey.setActiveUser(null);
-                  $state.go('menu.login');
+                  $state.go('login');
               },
               function (error) {
                   //Kinvey logout finished with error

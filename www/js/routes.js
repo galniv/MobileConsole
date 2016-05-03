@@ -22,14 +22,10 @@ angular.module('app.routes', [])
     abstract:true
   })
 
-  .state('menu.login', {
-    url: '/page4',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/login.html',
-        controller: 'loginCtrl'
-      }
-    }
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'loginCtrl'
   })
 
   .state('signup', {
@@ -111,7 +107,7 @@ angular.module('app.routes', [])
     }
   })
 
-$urlRouterProvider.otherwise('/side-menu21/page4')
+$urlRouterProvider.otherwise("/login")
 
   
 
