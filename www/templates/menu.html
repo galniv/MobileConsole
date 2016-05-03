@@ -1,0 +1,31 @@
+<ion-side-menus style="" enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button></ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="side-menu21"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu style="background-color:#D44B2B;" side="left" id="side-menu21">
+        <ion-header-bar class="bar-stable">
+            <div class="title">Menu</div>
+        </ion-header-bar>
+        <ion-content padding="false" class="side-menu-left has-header">
+            <a class="button button-calm  button-block icon-left ion-android-apps" id="menu-button6" menu-close="" ui-sref="apps">--appName--</a>
+            <ion-list style="">
+                <ion-item style="" class="item-divider">Development</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.environmentDashboard">Dashboard</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.users">Users</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.dataLinks">Data links</ion-item>
+            </ion-list>
+            <ion-list style="">
+                <ion-item style="" menu-close="" ui-sref="menu.collaboration">Collaboration</ion-item>
+                <ion-item style="" menu-close="" ui-sref="menu.environmentSettings">Settings</ion-item>
+            </ion-list>
+            <div style="height: 100px;" class="spacer"></div>
+            <a class="button button-calm  button-block" style="border-radius:0px 0px 0px 0px;" id="menu-button5" menu-close="" ui-sref="menu.login">Logout</a>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>
