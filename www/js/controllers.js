@@ -2,7 +2,7 @@ angular.module('app.controllers', [])
   
 .controller('appsCtrl', ['$scope', '$kinvey', '$state', function($scope, $kinvey, $state) {
   $scope.openAppDetails = function(app) {
-    $state.go('menu.appInformation', { app: app });
+    $state.go('menu.appInformation', { app : app });
   };
 
   $scope.refreshApps = function(skipPullBroadcast) {
@@ -71,13 +71,17 @@ angular.module('app.controllers', [])
 })
    
 .controller('appInformationCtrl', function($scope, $stateParams) {
-  $scope.app = $stateParams.app;
+  console.log("here..");
+//  $scope.refreshAppInfo = function () {
+    $scope.app = $stateParams.app;
 
-  var totalCollaborators = 0;
-  for (var i=0; i < $scope.app.environments.length; i++) {
-    totalCollaborators += $scope.app.environments[i].numberOfCollaborators;
-  }
-  $scope.totalCollaborators = totalCollaborators;
+    var totalCollaborators = 0;
+    for (var i=0; i < $scope.app.environments.length; i++) {
+      totalCollaborators += $scope.app.environments[i].numberOfCollaborators;
+    }
+    $scope.totalCollaborators = totalCollaborators;
+ // };
+
 })
    
 .controller('environmentDashboardCtrl', function($scope) {

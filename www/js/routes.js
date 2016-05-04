@@ -68,6 +68,8 @@ angular.module('app.routes', [])
 
   .state('menu.appInformation', {
     url: '/app',
+    cache: false,
+    parameters: ['app'],
     views: {
       'side-menu21': {
         templateUrl: 'templates/appInformation.html',
