@@ -105,6 +105,7 @@ angular.module('app.routes', [])
 
   .state('menu.collaboration', {
     url: '/collaboration',
+    cache: false,
     views: {
       'side-menu21': {
         templateUrl: 'templates/collaboration.html',

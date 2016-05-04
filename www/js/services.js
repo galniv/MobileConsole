@@ -98,9 +98,8 @@ angular.module('app.services', [])
 
     function configure() {
         // Check if 3D Touch is supported on the device
-        console.log("1")
         check3DTouchAvailability().then(function(available) {
-                console.log("2", available);
+                console.log("3d touch available?", available);
                 if (available) {    // Comment out this check if testing in simulator
                     if ($localStorage.lastViewedPages && $localStorage.lastViewedPages.length > 0) {
                         // Configure Quick Actions
@@ -117,7 +116,7 @@ angular.module('app.services', [])
 
                         // Set event handler to check which Quick Action was pressed
                         window.ThreeDeeTouch.onHomeIconPressed = function(payload) {
-                            console.log("here!")
+                            console.log("3d touch detected!")
                             $state.go(payload.type);
                         };
                     }

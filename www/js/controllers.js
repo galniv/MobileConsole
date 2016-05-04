@@ -158,21 +158,92 @@ angular.module('app.controllers', [])
     console.log(error);
   })
 }])
-   
-.controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', '$rootScope', '$localStorage', function($scope, $http, $kinvey, $rootScope, $localStorage) {
+
+.controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', '$rootScope', '$localStorage', '$ionicPopup', function($scope, $http, $kinvey, $rootScope, $localStorage, $ionicPopup) {
   $scope.regenerateAppSecret = function (){
     url = '/environments/' + $rootScope.currentEnv.id + '/regenerate-appsecret';
-    return makeKapiRequest($kinvey, $http, $localStorage, $rootScope, 'post', url, {}, true)
+    return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', url, {}, true);
   };
 
   $scope.regenerateMasterSecret = function () {
     url = '/environments/' + $rootScope.currentEnv.id + '/regenerate-mastersecret';
-    return makeKapiRequest($kinvey, $http, $localStorage, $rootScope, 'post', url, {}, true)
+    return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', url, {}, true);
   };
+
+  $scope.renameEnvironment = function() {
+    $ionicPopup.prompt({
+      title: 'Rename environment',
+      template: 'Enter new name',
+      inputType: 'text',
+      inputPlaceholder: $rootScope.currentEnv.name
+    }).then(function(res) {
+      if (res !== $rootScope.currentEnv.name) {
+        url = '/environments/' + $rootScope.currentEnv.id;
+        return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'put', url, { name: res }, true).then(function(response) {
+          console.log(response)
+        }).catch(function(err) {
+          console.log(err)
+        })
+      }
+    });
+  }
 }])
    
-.controller('collaborationCtrl', function($scope) {
+.controller('collaborationCtrl', function($scope, $http, $kinvey, $rootScope, $localStorage, $ionicPopup, $ionicListDelegate) {
+  var collabUrl = '/environments/' + $rootScope.currentEnv.id + '/collaboration/collaborators';
+  var adminUrl = '/environments/' + $rootScope.currentEnv.id + '/collaboration/admins';
+  makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', collabUrl, null, false).then(function(collaborators) {
+    $scope.collaborators = collaborators;
+  });
+  makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', adminUrl, null, false).then(function(admins) {
+    $scope.admins = admins;
+  });
 
+  $scope.addAdmin = function(email) {
+    var body = {
+      email: email
+    }
+    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', adminUrl, body, false).then(function() {
+      makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', adminUrl, null, false).then(function(admins) {
+        $scope.admins = admins;
+      });
+    });
+  }
+
+  $scope.addCollab = function(email) {
+    var body = {
+      email: email
+    }
+    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', collabUrl, body, false).then(function() {
+      makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', collabUrl, null, false).then(function(collaborators) {
+        $scope.collaborators = collaborators;
+      });
+    });
+  }
+
+  $scope.removeAdmin = function(admin) {
+    var body = {
+      email: admin.email
+    }
+    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'delete', adminUrl, body, false).then(function(admins) {
+      if (admins) {
+        $scope.admins = admins;
+      }
+      $ionicListDelegate.closeOptionButtons();
+    });
+  };
+
+  $scope.removeCollab = function(collab) {
+    var body = {
+      email: collab.email
+    }
+    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'delete', collabUrl, body, false).then(function(collaborators) {
+      if (collaborators) {
+        $scope.collaborators = collaborators;
+      }
+      $ionicListDelegate.closeOptionButtons();
+    });
+  };
 })
    
 .controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', function($scope, UserService, $localStorage) {
@@ -207,16 +278,25 @@ angular.module('app.controllers', [])
     });
 }])
 
-function makeKapiRequest($kinvey, $http, $localStorage, $rootScope, method, path, body, updateEnvironment) {
+function makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, method, path, body, updateEnvironment) {
   var url = 'https://auth.kinvey.com/oauth/validate?access_token=' + $kinvey.User.getActiveUser()._socialIdentity.kinveyAuth.access_token;
   return $http.get(url).then(function(response) {
     var kapiAuth = 'Kinvey ' + response.data.client_token;
     var options = {
+      method: method,
+      url: 'https://manage.kinvey.com' + path,
       headers: {
         Authorization: kapiAuth
       }
     }
-    return $http[method]('https://manage.kinvey.com' + path, body, options).then(function(response) {
+
+    if (body) {
+      options.data = body;
+      options.headers['Content-Type'] = 'application/json';
+    }
+
+    return $http(options).then(function(response) {
+      $scope.gotError = false;
       if (updateEnvironment) {
         $localStorage.currentEnv = $rootScope.currentEnv = response.data;
 
@@ -227,8 +307,16 @@ function makeKapiRequest($kinvey, $http, $localStorage, $rootScope, method, path
           }
         }
       }
+      return response.data;
     });
   }).catch(function(error) {
     console.log(error);
+    if (Array.isArray(error.data)) {
+      $scope.errors = error.data;
+    }
+    else {
+      $scope.errors = [ error.data ];
+    }
+    $scope.gotError = true;
   });
 }

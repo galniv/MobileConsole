@@ -8,9 +8,8 @@
         <div style="color: rgb(0, 0, 0); font-size: 12px;" id="collaboration-markdown11">
             <p>Administrators have complete access to your app, including the ability to add other collaborators or administrators.</p>
         </div>
-        <ion-list style="">
-            <ion-item style="">user@provider.com</ion-item>
-            <ion-item style="">user2@provider.com</ion-item>
+        <ion-list>
+            <ion-item ng-repeat="admin in admins">{{ admin.email }} <ion-option-button class="button-assertive" ng-click="removeAdmin(admin)">Remove</ion-option-button></ion-item>
         </ion-list>
         <div style="width: 300px; height: 2px;" class="spacer"></div>
         <h4 style="color: rgb(0, 0, 0);" id="collaboration-heading10">Collaborators</h4>
@@ -18,8 +17,14 @@
             <p>Collaborators have complete access to your app, but are not able to add other collaborators or administrators.</p>
         </div>
         <ion-list style="">
-            <ion-item style="">collab@provider.com</ion-item>
-            <ion-item style="">user2@provider.com</ion-item>
+            <ion-item ng-repeat="collaborator in collaborators">{{ collaborator.email }} <ion-option-button class="button-assertive" ng-click="removeCollab(collaborator)">Remove</ion-option-button></ion-item></ion-item>
         </ion-list>
+        <div ng-show="gotError" style="margin-top: 10px;">
+            <ul class="errors">
+                <li ng-repeat="error in errors">
+                    <span class="field">{{ error.field ? error.field : error.code }}</span> - <span class="message">{{ error.message ? error.message : error.description }}</span>
+                </li>
+            </ul>
+        </div>
     </ion-content>
 </ion-view>
