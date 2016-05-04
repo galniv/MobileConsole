@@ -35,6 +35,11 @@ angular.module('app.routes', [])
     controller: 'loginCtrl'
   })
 
+  .state('logout', {
+    url: '/logout',
+    controller: 'logoutCtrl'
+  })
+
   .state('signup', {
     url: '/page5',
     templateUrl: 'templates/signup.html',

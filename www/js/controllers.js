@@ -87,13 +87,19 @@ angular.module('app.controllers', [])
   $scope.user = UserService.activeUser();
 }])
  
-.controller('DashCtrl',
+.controller('logoutCtrl',
   ['$scope', '$kinvey', "$state", function ($scope, $kinvey, $state) {
       $scope.logout = function () {
           console.log("logout");
 
           //Kinvey logout starts
-          var promise = $kinvey.User.logout();
+          var activeUser = $kinvey.User.getActiveUser();
+          if (!activeUser) {
+            console.log("Already logged out!")
+            return $state.go('login');
+          }
+
+          var promise = activeUser.logout();
           promise.then(
               function () {
                   //Kinvey logout finished with success
