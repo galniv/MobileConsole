@@ -122,7 +122,7 @@ angular.module('app.controllers', [])
 
 
 }) 
-.controller('appInformationCtrl', function($scope, $stateParams, $rootScope, $ionicActionSheet) {
+.controller('appInformationCtrl', function($scope, $state, $stateParams, $rootScope, $ionicActionSheet) {
   $scope.app = $stateParams.app;
 
   $scope.onSelectEnvironment = function (environment){
