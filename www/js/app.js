@@ -34,15 +34,31 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
             $localStorage.lastViewedPages = [];
           }
 
-          $localStorage.lastViewedPages.push({
-            state: toState.name
-          });
+          var newRecord = {
+            state: toState.name,
+            environmentId: $rootScope.currentEnv.id,
+            appId: $rootScope.currentApp.id,
+            displayString: $rootScope.currentApp.name + ' / ' + $rootScope.currentEnv.name + ' / ' + toState.name
+          };
 
-          // Only keep the last four pages.
-          if ($localStorage.lastViewedPages.length > 4) {
-            $localStorage.lastViewedPages.shift();
+          var addNewRecord = true;
+          for (var i=0; i < $localStorage.lastViewedPages.length; i++) {
+            if ($localStorage.lastViewedPages.displayString == newRecord.displayString) {
+              addNewRecord = false;
+              break
+            }
           }
 
+          if (addNewRecord) {
+            $localStorage.lastViewedPages.push(newRecord);
+
+            // Only keep the last four pages.
+            if ($localStorage.lastViewedPages.length > 4) {
+              $localStorage.lastViewedPages.shift();
+            }
+          }
+
+          
           QuickActionService.configure();
         }
       }

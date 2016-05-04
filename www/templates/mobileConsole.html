@@ -1,7 +1,7 @@
 <ion-view style="background-color: rgb(212, 75, 43);" id="page13" title="Mobile Console" hide-back-button="true">
     <ion-content class="has-header" padding="true">
         <div>
-            <img style="display: block; margin-left: auto; margin-right: auto;" src="img/uXQltBZ9Qm6X8mIjA4l6_kinvey-logo-white.png" height="auto" width="50%">
+            <img style="display: block; margin-left: auto; margin-right: auto;" src="img/uXQltBZ9Qm6X8mIjA4l6_kinvey-logo-white.png" height="144" width="380">
         </div>
         <h2 style="color: rgb(0, 0, 0); text-align: center;" id="mobileConsole-heading11">Welcome back<span ng-if="user.firstName">, {{ user.firstName }}</span>!</h2>
         <ng-if="lastViewedPages">
@@ -9,7 +9,7 @@
                 <p>Recently accessed places:</p>
             </div>
             <ion-list style="">
-                <ion-item ng-repeat="page in lastViewedPages" style="" ui-sref="{{ page.state }}">{{ page.state }}</ion-item>
+                <ion-item ng-repeat="page in lastViewedPages" style="" ng-click="navigate(page)">{{ page.displayString }}</ion-item>
             </ion-list>
         </ng-if>
     </ion-content>

@@ -95,10 +95,9 @@ angular.module('app.controllers', [])
 
 })
 
-.controller ('menuCtrl', function($scope, $state, $stateParams, $rootScope, $ionicActionSheet) {
+.controller ('menuCtrl', function($scope, $state, $stateParams, $rootScope, $localStorage, $ionicActionSheet) {
   // Triggered on a button click, or some other target
   $scope.showActionSheet = function() {
-    
     var envs = [];
     for (var i=0; i < $rootScope.currentApp.environments.length; i++) {
       envs.push({text: $rootScope.currentApp.environments[i].name});
@@ -112,22 +111,31 @@ angular.module('app.controllers', [])
       },
       buttonClicked: function(index) {
         $rootScope.currentEnv = $rootScope.currentApp.environments[index];
+        $localStorage.currentEnv = $rootScope.currentEnv;
         return true;
       }
     });
   };
-  if($rootScope.currentApp == null){
-    $state.go('apps');
+
+  if($rootScope.currentApp == null) {
+    if ($localStorage.currentApp && $localStorage.currentEnv) {
+      $rootScope.currentApp = $localStorage.currentApp;
+      $rootScope.currentEnv = $localStorage.currentEnv;
+    }
+    else {
+      $state.go('apps');
+    }
   }
-
-
 }) 
-.controller('appInformationCtrl', function($scope, $stateParams, $rootScope, $ionicActionSheet) {
+
+.controller('appInformationCtrl', function($scope, $state, $stateParams, $rootScope, $localStorage, $ionicActionSheet) {
   $scope.app = $stateParams.app;
 
   $scope.onSelectEnvironment = function (environment){
     $rootScope.currentApp = $scope.app;
     $rootScope.currentEnv = environment;
+    $localStorage.currentApp = $rootScope.currentApp;
+    $localStorage.currentEnv = $rootScope.currentEnv;
     $state.go('menu.environmentDashboard');
   }
 
@@ -151,36 +159,15 @@ angular.module('app.controllers', [])
   })
 }])
    
-.controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', function($scope, $http, $kinvey) {
+.controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', '$rootScope', '$localStorage', function($scope, $http, $kinvey, $rootScope, $localStorage) {
   $scope.regenerateAppSecret = function (){
-    var regenerateAppSecret = $kinvey.DataStore.getInstance('regenerate-appsecret', $kinvey.DataStoreType.Network);
-
-    var query = new $kinvey.Query();
-    query.equalTo('environmentId', $scope.currentEnv.id);
-
-    regenerateAppSecret.find(query).then(function(response) {
-      console.log(response);
-    }).catch(function(error){
-      console.log(error);
-    })
+    url = '/environments/' + $rootScope.currentEnv.id + '/regenerate-appsecret';
+    return makeKapiRequest($kinvey, $http, $localStorage, $rootScope, 'post', url, {}, true)
   };
 
   $scope.regenerateMasterSecret = function () {
-    var activeUser = $kinvey.User.getActiveUser();
-
-    var req = {
-      method: 'POST',
-      url: 'https://manage.kinvey.com/environments/' + $scope.currentEnv.id + '/regenerate-mastersecret',
-      headers: {
-        'Authorization': 'Kinvey ' + activeUser.authtoken //WRONG! Needs token for the app being edited
-      }
-    }
-    $http(req).then(function(response){
-      console.log(response);
-    }, function(error){
-      console.log(error);
-    })
-
+    url = '/environments/' + $rootScope.currentEnv.id + '/regenerate-mastersecret';
+    return makeKapiRequest($kinvey, $http, $localStorage, $rootScope, 'post', url, {}, true)
   };
 }])
    
@@ -191,27 +178,57 @@ angular.module('app.controllers', [])
 .controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', function($scope, UserService, $localStorage) {
   $scope.user = UserService.activeUser();
   $scope.lastViewedPages = $localStorage.lastViewedPages || false;
+
+  $scope.navigate = function(pageRecord) {
+
+  };
 }])
  
 .controller('logoutCtrl', ['$scope', '$kinvey', "$state", '$localStorage', function ($scope, $kinvey, $state, $localStorage) {
-      console.log("logout");
-      $localStorage.lastViewedPages = null;
+    console.log("logout");
+    $localStorage.lastViewedPages = null;
 
-      //Kinvey logout starts
-      var activeUser = $kinvey.User.getActiveUser();
-      if (!activeUser) {
-        console.log("Already logged out!")
-        return $state.go('login');
+    //Kinvey logout starts
+    var activeUser = $kinvey.User.getActiveUser();
+    if (!activeUser) {
+      console.log("Already logged out!")
+      return $state.go('login');
+    }
+
+    var promise = activeUser.logout().then(
+        function () {
+            //Kinvey logout finished with success
+            console.log("user logout");
+            $state.go('login');
+        },
+        function (error) {
+            //Kinvey logout finished with error
+            alert("Error logout: " + JSON.stringify(error));
+    });
+}])
+
+function makeKapiRequest($kinvey, $http, $localStorage, $rootScope, method, path, body, updateEnvironment) {
+  var url = 'https://auth.kinvey.com/oauth/validate?access_token=' + $kinvey.User.getActiveUser()._socialIdentity.kinveyAuth.access_token;
+  return $http.get(url).then(function(response) {
+    var kapiAuth = 'Kinvey ' + response.data.client_token;
+    var options = {
+      headers: {
+        Authorization: kapiAuth
       }
+    }
+    return $http[method]('https://manage.kinvey.com' + path, body, options).then(function(response) {
+      if (updateEnvironment) {
+        $localStorage.currentEnv = $rootScope.currentEnv = response.data;
 
-      var promise = activeUser.logout().then(
-          function () {
-              //Kinvey logout finished with success
-              console.log("user logout");
-              $state.go('login');
-          },
-          function (error) {
-              //Kinvey logout finished with error
-              alert("Error logout: " + JSON.stringify(error));
-      });
-  }])
+        for (var i=0; i < $rootScope.currentApp.environments.length; i++) {
+          if ($rootScope.currentApp.environments[i].id === response.data.id) {
+            $rootScope.currentApp.environments[i] = response.data;
+            break
+          }
+        }
+      }
+    });
+  }).catch(function(error) {
+    console.log(error);
+  });
+}
