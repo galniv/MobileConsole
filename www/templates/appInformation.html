@@ -2,11 +2,11 @@
     <ion-content class="has-header" padding="true">
         <h1 style="color: rgb(0, 0, 0);" id="appInformation-heading3">{{ app.name }}</h1>
         <div style="width: 300px; height: 4px;" class="spacer"></div>
-     <!--   <h3 style="color: rgb(0, 0, 0);" id="appInformation-heading1">Environments</h3>-->
-<!--         <ion-list style="">
-            <ion-item ng-repeat="environment in app.environments" style="" ui-sref="menu.environmentDashboard">{{ environment.name }}</ion-item>
-        </ion-list> -->
-        <button class="button" ng-click="showActionSheet()"> {{ selection ? selection.name : "Environments"}} </button>
+        <h3 style="color: rgb(0, 0, 0);" id="appInformation-heading1">Environments</h3>
+         <ion-list style="">
+            <ion-item ng-repeat="environment in app.environments" style="" ui-sref="menu.environmentDashboard" ng-click="onSelectEnvironment(environment)">{{ environment.name }}</ion-item>
+        </ion-list> 
+        <!--<button class="button" ng-click="showActionSheet()"> {{ selection ? selection.name : "Environments"}} </button>-->
 
         <div style="width: 300px; height: 11px;" class="spacer"></div>
         <h3 style="color: rgb(0, 0, 0);" id="appInformation-heading4">Ownership</h3>
