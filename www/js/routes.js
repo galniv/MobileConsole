@@ -41,7 +41,7 @@ angular.module('app.routes', [])
   })
 
   .state('signup', {
-    url: '/page5',
+    url: '/signup',
     templateUrl: 'templates/signup.html',
     controller: 'signupCtrl'
   })
@@ -111,6 +111,7 @@ angular.module('app.routes', [])
 
   .state('menu.mobileConsole', {
     url: '/landing',
+    cache: false,
     views: {
       'side-menu21': {
         templateUrl: 'templates/mobileConsole.html',

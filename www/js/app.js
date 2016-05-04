@@ -5,9 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'kinvey', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
+angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
 
-.run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService) {
+.run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', '$localStorage', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService, $localStorage) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -24,8 +24,24 @@ angular.module('app', ['ionic', 'kinvey', 'app.controllers', 'app.routes', 'app.
 
     // setup the stateChange listener
     $rootScope.$on("$stateChangeStart", function (event, toState) {
+      console.log($localStorage.lastViewedPages);
       if (toState.name !== 'login') { 
-        determineBehavior($kinvey, $state, $rootScope, UserService, toState);
+        var courseAltered = determineBehavior($kinvey, $state, $rootScope, UserService, toState);
+
+        if (!courseAltered && ['signup', 'menu.mobileConsole'].indexOf(toState.name) == -1) {
+          if (!$localStorage.lastViewedPages) {
+            $localStorage.lastViewedPages = [];
+          }
+
+          $localStorage.lastViewedPages.push({
+            state: toState.name
+          });
+
+          // Only keep the last four pages.
+          if ($localStorage.lastViewedPages.length > 4) {
+            $localStorage.lastViewedPages.shift();
+          }
+        }
       }
     });
 
@@ -40,5 +56,8 @@ function determineBehavior($kinvey, $state, $rootScope, UserService, toState) {
     $state.go('login');
   } else if (($state.current.name === 'login') && (activeUser !== null) && (!toState || (toState.name !== 'menu.mobileConsole'))) {
     $state.go('menu.mobileConsole');
+  } else {
+    return false;
   }
+  return true;
 }

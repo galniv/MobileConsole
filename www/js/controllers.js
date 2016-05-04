@@ -5,6 +5,8 @@ angular.module('app.controllers', [])
     $state.go('menu.appInformation', { app: app });
   };
 
+  var appCollection = $kinvey.DataStore.getInstance('apps');
+
   $scope.refreshApps = function(skipPullBroadcast) {
     return appCollection.find(null, { useDeltaFetch: false }).then(function(result) {
       // The entities fetched from the cache
@@ -25,42 +27,65 @@ angular.module('app.controllers', [])
       }
     }).catch(function(error) {
       console.log("Error fetching apps!", error)
-      $scope.$broadcast('scroll.refreshComplete');
+      if (!skipPullBroadcast) {
+        $scope.$broadcast('scroll.refreshComplete');
+      }
     });
   };
 
-  var appCollection = $kinvey.DataStore.getInstance('apps');
-
   if (!$scope.apps) {
-    $scope.refreshApps(true)
+    $scope.refreshApps(true);
   }
 }])
 
 .controller('loginCtrl', ['$scope', '$kinvey', "$state", "UserService", function ($scope, $kinvey, $state, UserService) {
-      $scope.signIn = function () {
-          console.log('Sign-In');
+    $scope.signIn = function () {
+        console.log('Sign-In');
 
-          UserService.login().then(function (response) {
-                console.log("Successful login!")
-                  //Kinvey login finished with success
-                  $scope.submittedError = false;
-                  $state.go('menu.mobileConsole');
-              },
-              function (error) {
-                  //Kinvey login finished with error
-                  $scope.submittedError = true;
-                  $scope.errorDescription = error.description;
-                  console.log("Error login " + error.description);//
-              }
-          );
-          //$state.go('tab.dash');
-      };
+        UserService.login().then(function (response) {
+              console.log("Successful login!")
+                //Kinvey login finished with success
+                $scope.submittedError = false;
+                $state.go('menu.mobileConsole');
+            },
+            function (error) {
+                //Kinvey login finished with error
+                $scope.submittedError = true;
+                $scope.errorDescription = error.description;
+                console.log("Error login " + error.description);//
+            }
+        );
+        //$state.go('tab.dash');
+    };
 
-  }])
-   
-.controller('signupCtrl', function($scope) {
+}])
 
-})
+.controller('signupCtrl', ['$scope', '$state', '$http', function($scope, $state, $http) {
+  $scope.signup = function() {
+    var newUser = {
+      email: $scope.email,
+      password: $scope.password
+    }
+
+    $http.post('https://manage.kinvey.com/v2/users', newUser).then(function(response) {
+      $scope.gotError = false;
+      $state.go('login');
+    }).catch(function(errorResponse) {
+      var errorBody = errorResponse.data;
+      if (errorBody.code !== 'ValidationError' || !errorBody.errors) {
+        $scope.errors = [{
+          field: errorBody.code,
+          message: errorBody.description
+        }];
+      }
+      else {
+        $scope.errors = errorBody.errors
+      }
+
+      $scope.gotError = true;
+    });
+  };
+}])
    
 .controller('usersCtrl', function($scope) {
 
@@ -92,13 +117,14 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('mobileConsoleCtrl', ['$scope', 'UserService', function($scope, UserService) {
+.controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', function($scope, UserService, $localStorage) {
   $scope.user = UserService.activeUser();
+  $scope.lastViewedPages = $localStorage.lastViewedPages || false;
 }])
  
-.controller('logoutCtrl',
-  ['$scope', '$kinvey', "$state", function ($scope, $kinvey, $state) {
+.controller('logoutCtrl', ['$scope', '$kinvey', "$state", '$localStorage', function ($scope, $kinvey, $state, $localStorage) {
       console.log("logout");
+      $localStorage.lastViewedPages = null;
 
       //Kinvey logout starts
       var activeUser = $kinvey.User.getActiveUser();

@@ -4,5 +4,7 @@
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.3.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "ngstorage": "^0.3.10"
+  }
 }

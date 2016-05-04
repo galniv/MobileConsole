@@ -4,15 +4,15 @@
         <form style="" class="list">
             <label style="" name="searchApps" class="item item-input">
                 <i class="icon ion-search placeholder-icon"></i>
-                <input placeholder="App name or ID" type="search">
+                <input placeholder="App name or ID" type="search" ng-model="query">
             </label>
         </form>
         <ion-list style="">
-            <ion-item collection-repeat="app in apps" style="" ng-click="openAppDetails(app)" class="item-thumbnail-left apps">
+            <ion-item collection-repeat="app in apps | filter:query" style="" ng-click="openAppDetails(app)" class="item-thumbnail-left apps">
                 <img src="img/5PCFYqCYT5UQki5eTPq7_kinvey-guilloche-seal_blue_200.png">
-                <div class="appName">{{app.name}}</div>
+                <div class="appName">{{ app.name }}</div>
                 <ul>
-                    <li ng-repeat="environment in app.environments" class="environmentName">{{environment.name}}</li>
+                    <li ng-repeat="environment in app.environments" class="environmentName">{{ environment.name }}</li>
                 </ul>
             </ion-item>
         </ion-list>

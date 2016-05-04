@@ -37,3 +37,19 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   font-weight: bold;
   text-transform: capitalize;
 }
+
+.errors {
+  background-color: $energized;
+  border-radius: 2px;
+  color: red;
+  padding: 10px;
+
+  .field {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  .message {
+    font-style: italic;
+  }
+}

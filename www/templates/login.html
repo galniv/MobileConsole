@@ -1,7 +1,7 @@
 <ion-view style="background-color: rgb(212, 75, 43);" id="login" title="Login" hide-nav-bar="true">
     <ion-content padding="true" class="manual-ios-statusbar-padding">
         <div>
-            <img style="display: block; margin-left: auto; margin-right: auto;" src="img/uXQltBZ9Qm6X8mIjA4l6_kinvey-logo-white.png" height="auto" width="50%">
+            <img style="display: block; margin-left: auto; margin-right: auto;" src="img/uXQltBZ9Qm6X8mIjA4l6_kinvey-logo-white.png" height="144" width="380">
         </div>
         <div style="width: 300px; height: 10px;" class="spacer"></div>
         <div style="color: rgb(255, 255, 255); text-align: center;" id="login-markdown1">
@@ -11,8 +11,7 @@
         <form style="" class="list">
             <div style="width: 300px; height: 25px;" class="spacer"></div>
             <a class="button button-stable  button-block" id="login-button2" ng-click="signIn()">Log in with your Console credentials</a>
-            <!-- ui-sref="menu.mobileConsole" -->
-            <a class="button button-stable  button-block button-clear" id="login-button3" onclick="window.open('/signup', '_system', 'location=yes'); return false;" href="#">Or create an account</a>
+            <a class="button button-stable  button-block button-clear" id="login-button3" ui-sref="signup" href="#">Or create an account</a>
         </form>
     </ion-content>
 </ion-view>

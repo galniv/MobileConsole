@@ -9742,3 +9742,14 @@ a.button {
 .plan-level {
   font-weight: bold;
   text-transform: capitalize; }
+
+.errors {
+  background-color: #ffc900;
+  border-radius: 2px;
+  color: red;
+  padding: 10px; }
+  .errors .field {
+    font-weight: bold;
+    text-transform: capitalize; }
+  .errors .message {
+    font-style: italic; }
