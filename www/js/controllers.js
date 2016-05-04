@@ -5,9 +5,7 @@ angular.module('app.controllers', [])
     $state.go('menu.appInformation', { app: app });
   };
 
-  var appCollection = $kinvey.DataStore.getInstance('apps');
-
-  if (!$scope.apps) {
+  $scope.refreshApps = function(skipPullBroadcast) {
     return appCollection.find(null, { useDeltaFetch: false }).then(function(result) {
       // The entities fetched from the cache
       $scope.apps = result.cache;
@@ -21,9 +19,20 @@ angular.module('app.controllers', [])
       // furure fetches.
       $scope.apps = entities;
       $scope.$digest();
+
+      if (!skipPullBroadcast) {
+        $scope.$broadcast('scroll.refreshComplete');
+      }
     }).catch(function(error) {
       console.log("Error fetching apps!", error)
+      $scope.$broadcast('scroll.refreshComplete');
     });
+  };
+
+  var appCollection = $kinvey.DataStore.getInstance('apps');
+
+  if (!$scope.apps) {
+    $scope.refreshApps(true)
   }
 }])
 
@@ -89,27 +98,23 @@ angular.module('app.controllers', [])
  
 .controller('logoutCtrl',
   ['$scope', '$kinvey', "$state", function ($scope, $kinvey, $state) {
-      $scope.logout = function () {
-          console.log("logout");
+      console.log("logout");
 
-          //Kinvey logout starts
-          var activeUser = $kinvey.User.getActiveUser();
-          if (!activeUser) {
-            console.log("Already logged out!")
-            return $state.go('login');
-          }
-
-          var promise = activeUser.logout();
-          promise.then(
-              function () {
-                  //Kinvey logout finished with success
-                  console.log("user logout");
-                  $kinvey.setActiveUser(null);
-                  $state.go('login');
-              },
-              function (error) {
-                  //Kinvey logout finished with error
-                  alert("Error logout: " + JSON.stringify(error));
-              });
+      //Kinvey logout starts
+      var activeUser = $kinvey.User.getActiveUser();
+      if (!activeUser) {
+        console.log("Already logged out!")
+        return $state.go('login');
       }
+
+      var promise = activeUser.logout().then(
+          function () {
+              //Kinvey logout finished with success
+              console.log("user logout");
+              $state.go('login');
+          },
+          function (error) {
+              //Kinvey logout finished with error
+              alert("Error logout: " + JSON.stringify(error));
+      });
   }])

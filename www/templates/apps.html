@@ -1,6 +1,6 @@
 <ion-view style="background-color: rgb(212, 75, 43);" id="page1" title="Apps">
     <ion-content class="has-header" padding="true">
-        <ion-refresher></ion-refresher>
+        <ion-refresher pulling-text="Pull to refresh..." on-refresh="refreshApps()"></ion-refresher>
         <form style="" class="list">
             <label style="" name="searchApps" class="item item-input">
                 <i class="icon ion-search placeholder-icon"></i>
@@ -8,7 +8,7 @@
             </label>
         </form>
         <ion-list style="">
-            <ion-item ng-repeat="app in apps" style="" ng-click="openAppDetails(app)" class="item-thumbnail-left apps">
+            <ion-item collection-repeat="app in apps" style="" ng-click="openAppDetails(app)" class="item-thumbnail-left apps">
                 <img src="img/5PCFYqCYT5UQki5eTPq7_kinvey-guilloche-seal_blue_200.png">
                 <div class="appName">{{app.name}}</div>
                 <ul>

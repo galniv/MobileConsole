@@ -25,7 +25,7 @@ angular.module('app', ['ionic', 'kinvey', 'app.controllers', 'app.routes', 'app.
     // setup the stateChange listener
     $rootScope.$on("$stateChangeStart", function (event, toState) {
       if (toState.name !== 'login') { 
-        determineBehavior($kinvey, $state, $rootScope,UserService, toState);
+        determineBehavior($kinvey, $state, $rootScope, UserService, toState);
       }
     });
 
@@ -38,7 +38,7 @@ function determineBehavior($kinvey, $state, $rootScope, UserService, toState) {
 
   if ((activeUser === null)) {
     $state.go('login');
-  } else if (($state.current.name === 'login') && (activeUser !== null) && (toState.name !== 'menu.mobileConsole')) {
+  } else if (($state.current.name === 'login') && (activeUser !== null) && (!toState || (toState.name !== 'menu.mobileConsole'))) {
     $state.go('menu.mobileConsole');
   }
 }
