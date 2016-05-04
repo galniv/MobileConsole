@@ -159,9 +159,43 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('environmentSettingsCtrl', function($scope) {
+.controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', function($scope, $http, $kinvey) {
+  $scope.regenerateAppSecret = function (){
+    
+    var activeUser = $kinvey.User.getActiveUser();
 
-})
+    var req = {
+      method: 'POST',
+      url: 'https://manage.kinvey.com/environments/' + $scope.currentEnv.id + '/regenerate-appsecret',
+      headers: {
+        'Authorization': 'Kinvey ' + activeUser.authtoken //WRONG! Needs token for the app being edited
+      }
+    }
+    $http(req).then(function(response){
+      console.log(response);
+    }, function(error){
+      console.log(error);
+    })
+  };
+
+  $scope.regenerateMasterSecret = function () {
+    var activeUser = $kinvey.User.getActiveUser();
+
+    var req = {
+      method: 'POST',
+      url: 'https://manage.kinvey.com/environments/' + $scope.currentEnv.id + '/regenerate-mastersecret',
+      headers: {
+        'Authorization': 'Kinvey ' + activeUser.authtoken //WRONG! Needs token for the app being edited
+      }
+    }
+    $http(req).then(function(response){
+      console.log(response);
+    }, function(error){
+      console.log(error);
+    })
+
+  };
+}])
    
 .controller('collaborationCtrl', function($scope) {
 

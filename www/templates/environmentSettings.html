@@ -3,12 +3,12 @@
         <h3 style="color: rgb(0, 0, 0);" id="environmentSettings-heading7">Naming</h3>
         <div style="color: rgb(0, 0, 0);" id="environmentSettings-markdown4">
             <p>Environment ID:
-                <strong>kid_D-Xfkdmc</strong>
+                <strong>{{currentEnv.id}}</strong>
             </p>
         </div>
         <div style="color: rgb(0, 0, 0);" id="environmentSettings-markdown5">
             <p>Name:
-                <strong>Production</strong>
+                <strong>{{currentEnv.name}}</strong>
             </p>
         </div>
         <button class="button button-positive button-small button-outline" id="environmentSettings-button13">Rename</button>
@@ -22,17 +22,17 @@
         </div>
         <div style="color: rgb(0, 0, 0); font-size: 10px;" id="environmentSettings-markdown6">
             <p>
-                <strong>App secret:</strong>ec653fb449734b7ea67ed7e738a91e33</p>
+                <strong>App secret:</strong>{{currentEnv.appSecret}}</p>
         </div>
         <div style="margin-right:-20px;">
-            <button class="button button-energized button-small button-full" style="left:-10px;" id="environmentSettings-button10">Regenerate app secret</button>
+            <button class="button button-energized button-small button-full" style="left:-10px;" id="environmentSettings-button10" ng-click="regenerateAppSecret()">Regenerate app secret</button>
         </div>
         <div style="color: rgb(0, 0, 0); font-size: 10px;" id="environmentSettings-markdown7">
             <p>
-                <strong>Master secret:</strong>ec653fb449734b7ea67ed7e738a91e33</p>
+                <strong>Master secret:</strong>{{currentEnv.masterSecret}}</p>
         </div>
         <div style="margin-right:-20px;">
-            <button class="button button-assertive button-small button-full" style="left:-10px;" id="environmentSettings-button11">Regenerate master secret</button>
+            <button class="button button-assertive button-small button-full" style="left:-10px;" id="environmentSettings-button11" ng-click="regenerateMasterSecret()">Regenerate master secret</button>
         </div>
     </ion-content>
 </ion-view>
