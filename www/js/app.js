@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
 
-.run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', '$localStorage', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService, $localStorage) {
+.run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', '$localStorage', 'QuickActionService', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService, $localStorage, QuickActionService) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,11 +20,12 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
       StatusBar.styleDefault();
     }
 
+    QuickActionService.configure();
+
     determineBehavior($kinvey, $state, $rootScope, UserService);
 
     // setup the stateChange listener
     $rootScope.$on("$stateChangeStart", function (event, toState) {
-      console.log($localStorage.lastViewedPages);
       if (toState.name !== 'login') { 
         var courseAltered = determineBehavior($kinvey, $state, $rootScope, UserService, toState);
 

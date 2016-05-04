@@ -82,10 +82,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('QuickActionService', ['$rootScope', '$q', QuickActionService]);
-
-function QuickActionService($rootScope, $q) {
-
+.factory('QuickActionService', ['$rootScope', '$q', '$localStorage', function QuickActionService($rootScope, $q, $localStorage) {
     function check3DTouchAvailability() {
         return $q(function(resolve, reject) {              
             if (window.ThreeDeeTouch) {
@@ -101,25 +98,25 @@ function QuickActionService($rootScope, $q) {
     function configure() {
         // Check if 3D Touch is supported on the device
         check3DTouchAvailability().then(function(available) {
-
                 if (available) {    // Comment out this check if testing in simulator
-
-                    // Configure Quick Actions
-                    window.ThreeDeeTouch.configureQuickActions([
-                        {
-                            type: 'newNote',
-                            title: 'New Note',
-                            subtitle: '',
-                            iconType: 'compose'
+                    if ($localStorage.lastViewedPages && $localStorage.lastViewedPages.length > 0) {
+                        // Configure Quick Actions
+                        var quickActions = [];
+                        for (var i=0; i < $localStorage.lastViewedPages.length; i++) {
+                            quickActions.push({
+                                type: $localStorage.lastViewedPages[i].state,
+                                title: $localStorage.lastViewedPages[i].state,
+                                subtitle: '',
+                                iconType: 'Favorite'
+                            });
                         }
-                    ]);
+                        window.ThreeDeeTouch.configureQuickActions(quickActions);
 
-                    // Set event handler to check which Quick Action was pressed
-                    window.ThreeDeeTouch.onHomeIconPressed = function(payload) {
-                        if (payload.type == 'newNote') {
-                            $rootScope.$broadcast('newNoteQuickAction');
-                        }
-                    };
+                        // Set event handler to check which Quick Action was pressed
+                        window.ThreeDeeTouch.onHomeIconPressed = function(payload) {
+                            $state.go(payload.type);
+                        };
+                    }
                 }
         })
     }
@@ -127,4 +124,4 @@ function QuickActionService($rootScope, $q) {
     return {
         configure: configure
     };
-}
+}])
