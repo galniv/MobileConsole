@@ -26,6 +26,7 @@ angular.module('app.routes', [])
   .state('menu', {
     url: '/side-menu21',
     templateUrl: 'templates/menu.html',
+    controller: 'menuCtrl',
     abstract:true
   })
 
@@ -68,6 +69,8 @@ angular.module('app.routes', [])
 
   .state('menu.appInformation', {
     url: '/app',
+    cache: false,
+    parameters: ['app'],
     views: {
       'side-menu21': {
         templateUrl: 'templates/appInformation.html',
@@ -79,15 +82,15 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menu.environmentDashboard', {
-    url: '/dashboard',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/environmentDashboard.html',
-        controller: 'environmentDashboardCtrl'
-      }
-    }
-  })
+  // .state('menu.environmentDashboard', {
+  //   url: '/dashboard',
+  //   views: {
+  //     'side-menu21': {
+  //       templateUrl: 'templates/environmentDashboard.html',
+  //       controller: 'environmentDashboardCtrl'
+  //     }
+  //   }
+  // })
 
   .state('menu.environmentSettings', {
     url: '/environment-settings',

@@ -13,9 +13,9 @@
             <div class="title">Menu</div>
         </ion-header-bar>
         <ion-content padding="false" class="side-menu-left has-header">
-            <a class="button button-calm  button-block icon-left ion-android-apps" id="menu-button6" menu-close="" ui-sref="apps">--appName--</a>
+            <a class="button button-calm  button-block icon-left ion-android-apps" id="menu-button6" menu-close="" ui-sref="apps">{{currentApp ? currentApp.name : "Application"}}</a>
             <ion-list style="">
-                <ion-item style="" class="item-divider">Development</ion-item>
+                <ion-item style="" class="item-divider" ng-click="showActionSheet()">{{currentEnv ? currentEnv.name : "Environment"}}</ion-item>
                 <ion-item style="" menu-close="" ui-sref="menu.environmentDashboard">Dashboard</ion-item>
                 <ion-item style="" menu-close="" ui-sref="menu.users">Users</ion-item>
                 <ion-item style="" menu-close="" ui-sref="menu.dataLinks">Data links</ion-item>

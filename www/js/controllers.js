@@ -1,8 +1,8 @@
 angular.module('app.controllers', [])
-  
+
 .controller('appsCtrl', ['$scope', '$kinvey', '$state', function($scope, $kinvey, $state) {
   $scope.openAppDetails = function(app) {
-    $state.go('menu.appInformation', { app: app });
+    $state.go('menu.appInformation', { app : app });
   };
 
   var appCollection = $kinvey.DataStore.getInstance('apps');
@@ -17,7 +17,7 @@ angular.module('app.controllers', [])
       return result.networkPromise;
     }).then(function(entities) {
       // The entites fetched from the backend. Any entities that do not already exist in your cache
-      // or contain changes from what is stored in the cache are saved to the cache for
+      // or contain changes from what is stored in the cache are saved to the x for
       // furure fetches.
       $scope.apps = entities;
       $scope.$digest();
@@ -94,9 +94,59 @@ angular.module('app.controllers', [])
 .controller('dataLinksCtrl', function($scope) {
 
 })
-   
-.controller('appInformationCtrl', function($scope, $stateParams) {
+
+.controller ('menuCtrl', function($scope, $state, $stateParams, $rootScope, $ionicActionSheet) {
+  // Triggered on a button click, or some other target
+  $scope.showActionSheet = function() {
+    
+    var envs = [];
+    for (var i=0; i < $rootScope.currentApp.environments.length; i++) {
+      envs.push({text: $rootScope.currentApp.environments[i].name});
+    }
+    var envSelector = $ionicActionSheet.show({
+      buttons: envs,
+      titleText: 'Select an environment',
+      cancelText: 'Cancel',
+      cancel: function() {
+        // add cancel code..
+      },
+      buttonClicked: function(index) {
+        $rootScope.currentEnv = $rootScope.currentApp.environments[index];
+        return true;
+      }
+    });
+  };
+  if($rootScope.currentApp == null){
+    $state.go('apps');
+  }
+
+
+}) 
+.controller('appInformationCtrl', function($scope, $stateParams, $rootScope, $ionicActionSheet) {
   $scope.app = $stateParams.app;
+
+  // Triggered on a button click, or some other target
+  $scope.showActionSheet = function() {
+    
+    var envs = [];
+    for (var i=0; i < $scope.app.environments.length; i++) {
+      envs.push({text: $scope.app.environments[i].name});
+    }
+    var envSelector = $ionicActionSheet.show({
+      buttons: envs,
+      titleText: 'Select an environment',
+      cancelText: 'Cancel',
+      cancel: function() {
+        // add cancel code..
+      },
+      buttonClicked: function(index) {
+        $scope.selection = $scope.app.environments[index];
+        $rootScope.currentApp = $scope.app;
+        $rootScope.currentEnv = $scope.selection;
+        return true;
+      }
+    });
+  };
 
   var totalCollaborators = 0;
   for (var i=0; i < $scope.app.environments.length; i++) {
