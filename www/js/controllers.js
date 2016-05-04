@@ -155,25 +155,29 @@ angular.module('app.controllers', [])
   $scope.totalCollaborators = totalCollaborators;
 })
    
-.controller('environmentDashboardCtrl', function($scope) {
+.controller('environmentDashboardCtrl', ['$scope', '$kinvey', function($scope, $kinvey) {
+  var analyticsActiveUsers = $kinvey.DataStore.getInstance('analytics-activeusers', $kinvey.DataStoreType.Network);
 
-})
+  var query = new $kinvey.Query();
+  query.equalTo('environmentId', $scope.currentEnv.id);
+
+  analyticsActiveUsers.find(query).then(function(response) {
+    console.log(response);
+  }).catch(function(error){
+    console.log(error);
+  })
+}])
    
 .controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', function($scope, $http, $kinvey) {
   $scope.regenerateAppSecret = function (){
-    
-    var activeUser = $kinvey.User.getActiveUser();
+    var regenerateAppSecret = $kinvey.DataStore.getInstance('regenerate-appsecret', $kinvey.DataStoreType.Network);
 
-    var req = {
-      method: 'POST',
-      url: 'https://manage.kinvey.com/environments/' + $scope.currentEnv.id + '/regenerate-appsecret',
-      headers: {
-        'Authorization': 'Kinvey ' + activeUser.authtoken //WRONG! Needs token for the app being edited
-      }
-    }
-    $http(req).then(function(response){
+    var query = new $kinvey.Query();
+    query.equalTo('environmentId', $scope.currentEnv.id);
+
+    regenerateAppSecret.find(query).then(function(response) {
       console.log(response);
-    }, function(error){
+    }).catch(function(error){
       console.log(error);
     })
   };

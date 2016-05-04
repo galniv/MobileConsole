@@ -42,6 +42,8 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
           if ($localStorage.lastViewedPages.length > 4) {
             $localStorage.lastViewedPages.shift();
           }
+
+          QuickActionService.configure();
         }
       }
     });

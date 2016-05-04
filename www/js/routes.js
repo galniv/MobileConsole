@@ -82,15 +82,16 @@ angular.module('app.routes', [])
     }
   })
 
-  // .state('menu.environmentDashboard', {
-  //   url: '/dashboard',
-  //   views: {
-  //     'side-menu21': {
-  //       templateUrl: 'templates/environmentDashboard.html',
-  //       controller: 'environmentDashboardCtrl'
-  //     }
-  //   }
-  // })
+  .state('menu.environmentDashboard', {
+    url: '/dashboard',
+    cache: false,
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/environmentDashboard.html',
+        controller: 'environmentDashboardCtrl'
+      }
+    }
+  })
 
   .state('menu.environmentSettings', {
     url: '/environment-settings',

@@ -70,6 +70,7 @@ angular.module('app.services', [])
             var promise = $kinvey.User.loginWithMIC('http://localhost:8100/landing');
 
             promise.then(function (response) {
+                console.log('Got successful response from MIC')
                 return User.build(response);
             }, function (error) {
                 //Kinvey login finished with error
@@ -97,7 +98,9 @@ angular.module('app.services', [])
 
     function configure() {
         // Check if 3D Touch is supported on the device
+        console.log("1")
         check3DTouchAvailability().then(function(available) {
+                console.log("2", available);
                 if (available) {    // Comment out this check if testing in simulator
                     if ($localStorage.lastViewedPages && $localStorage.lastViewedPages.length > 0) {
                         // Configure Quick Actions
@@ -110,10 +113,11 @@ angular.module('app.services', [])
                                 iconType: 'Favorite'
                             });
                         }
-                        window.ThreeDeeTouch.configureQuickActions(quickActions);
+                        window.ThreeDeeTouch.configureQuickActions(quickActions.concat({ type: 'test', title: 'test!', subtitle: '', iconType: 'Favorite' }));
 
                         // Set event handler to check which Quick Action was pressed
                         window.ThreeDeeTouch.onHomeIconPressed = function(payload) {
+                            console.log("here!")
                             $state.go(payload.type);
                         };
                     }
