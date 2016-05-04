@@ -125,28 +125,11 @@ angular.module('app.controllers', [])
 .controller('appInformationCtrl', function($scope, $stateParams, $rootScope, $ionicActionSheet) {
   $scope.app = $stateParams.app;
 
-  // Triggered on a button click, or some other target
-  $scope.showActionSheet = function() {
-    
-    var envs = [];
-    for (var i=0; i < $scope.app.environments.length; i++) {
-      envs.push({text: $scope.app.environments[i].name});
-    }
-    var envSelector = $ionicActionSheet.show({
-      buttons: envs,
-      titleText: 'Select an environment',
-      cancelText: 'Cancel',
-      cancel: function() {
-        // add cancel code..
-      },
-      buttonClicked: function(index) {
-        $scope.selection = $scope.app.environments[index];
-        $rootScope.currentApp = $scope.app;
-        $rootScope.currentEnv = $scope.selection;
-        return true;
-      }
-    });
-  };
+  $scope.onSelectEnvironment = function (environment){
+    $rootScope.currentApp = $scope.app;
+    $rootScope.currentEnv = environment;
+    $state.go('menu.environmentDashboard');
+  }
 
   var totalCollaborators = 0;
   for (var i=0; i < $scope.app.environments.length; i++) {
