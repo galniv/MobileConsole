@@ -84,7 +84,6 @@ angular.module('app.routes', [])
 
   .state('menu.environmentDashboard', {
     url: '/dashboard',
-    cache: false,
     views: {
       'side-menu21': {
         templateUrl: 'templates/environmentDashboard.html',
@@ -105,7 +104,6 @@ angular.module('app.routes', [])
 
   .state('menu.collaboration', {
     url: '/collaboration',
-    cache: false,
     views: {
       'side-menu21': {
         templateUrl: 'templates/collaboration.html',

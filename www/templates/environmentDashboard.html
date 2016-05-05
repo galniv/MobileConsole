@@ -1,5 +1,21 @@
 <ion-view style="" id="page10" title="Environment Dashboard">
-    <ion-content class="has-header" padding="true">
-        <h1 style="color: rgb(0, 0, 0);" id="environmentDashboard-heading5">Production</h1>
-    </ion-content>
+	<ion-content ng-controller="ExampleController">
+	    <div class="card">
+	        <div class="item item-divider">
+	            A line chart
+	        </div>
+	        <div class="item item-text-wrap">
+	            <canvas id="Line" class="chart chart-line" data="data" labels="labels" legend="true" series="series" options="{showTooltips: false}"></canvas>
+	        </div>
+	    </div>
+<!-- 	    <div class="card">
+	        <div class="item item-divider">
+	            A bar chart
+	        </div>
+	        <div class="item item-text-wrap">
+	            <canvas id="Bar" class="chart chart-bar" data="data" labels="labels" legend="true" series="series" options="{showTooltips: false}"></canvas>
+	        </div>
+	    </div>
+ -->	</ion-content>
+
 </ion-view>
