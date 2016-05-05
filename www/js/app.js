@@ -29,16 +29,27 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
       if (toState.name !== 'login') { 
         var courseAltered = determineBehavior($kinvey, $state, $rootScope, UserService, toState);
 
-        if (!courseAltered && $rootScope.currentEnv && ['signup', 'menu.mobileConsole'].indexOf(toState.name) == -1) {
+        if (!courseAltered && $rootScope.currentEnv && ['signup', 'menu.mobileConsole', 'logout', 'menu'].indexOf(toState.name) == -1) {
           if (!$localStorage.lastViewedPages) {
             $localStorage.lastViewedPages = [];
+          }
+
+          var displayString = '';
+          if (toState.name === 'apps') {
+            displayString = toState.prettyName;
+          }
+          else if (toState.name == 'appInformation') {
+            displayString = $rootScope.currentApp.name + ' / ' + toState.prettyName;
+          }
+          else {
+            displayString = $rootScope.currentApp.name + ' / ' + $rootScope.currentEnv.name  + ' / ' + toState.prettyName
           }
 
           var newRecord = {
             state: toState.name,
             environmentId: $rootScope.currentEnv.id,
             appId: $rootScope.currentApp.id,
-            displayString: $rootScope.currentApp.name + ' / ' + $rootScope.currentEnv.name + ' / ' + toState.name
+            displayString: displayString
           };
 
           var addNewRecord = true;

@@ -18,6 +18,7 @@ angular.module('app.routes', [])
   $stateProvider
    
   .state('apps', {
+    prettyName: 'Apps',
     url: '/apps',
     templateUrl: 'templates/apps.html',
     controller: 'appsCtrl'
@@ -49,6 +50,7 @@ angular.module('app.routes', [])
 
   .state('menu.users', {
     url: '/users',
+    prettyName: 'Users',
     views: {
       'side-menu21': {
         templateUrl: 'templates/users.html',
@@ -59,6 +61,7 @@ angular.module('app.routes', [])
 
   .state('appInformation', {
     url: '/app',
+    prettyName: 'Information',
     cache: false,
     parameters: ['app'],
     templateUrl: 'templates/appInformation.html',
@@ -70,6 +73,7 @@ angular.module('app.routes', [])
 
   .state('menu.environmentDashboard', {
     url: '/dashboard',
+    prettyName: 'Dashboard',
     cache: false,
     views: {
       'side-menu21': {
@@ -81,6 +85,7 @@ angular.module('app.routes', [])
 
   .state('menu.environmentSettings', {
     url: '/environment-settings',
+    prettyName: 'Settings',
     views: {
       'side-menu21': {
         templateUrl: 'templates/environmentSettings.html',
@@ -91,6 +96,7 @@ angular.module('app.routes', [])
 
   .state('menu.collaboration', {
     url: '/collaboration',
+    prettyName: 'Collaboration',
     views: {
       'side-menu21': {
         templateUrl: 'templates/collaboration.html',
