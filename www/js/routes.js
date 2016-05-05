@@ -57,16 +57,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menu.dataLinks', {
-    url: '/data-links',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/dataLinks.html',
-        controller: 'dataLinksCtrl'
-      }
-    }
-  })
-
   .state('appInformation', {
     url: '/app',
     cache: false,

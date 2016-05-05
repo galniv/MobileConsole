@@ -9,6 +9,8 @@
         <ion-item collection-repeat="user in users" ng-class="(user._kmd.status.val) ? 'locked-down' : ''">
           <i ng-show="user._kmd.status.val" class="icon ion-locked"></i>
           {{ user.email }}
+          <ion-option-button class="button-positive" ng-click="resetPassword(user)">Reset password</ion-option-button>
+          <ion-option-button class="button-calm" ng-click="verifyEmail(user)">Resend email verification</ion-option-button>
           <ion-option-button ng-hide="user._kmd.status.val" class="button-assertive" ng-click="toggleLockdown(user)">Lockdown</ion-option-button>
           <ion-option-button ng-show="user._kmd.status.val" class="button-energized" ng-click="toggleLockdown(user)">Unlock</ion-option-button>
         </ion-item>

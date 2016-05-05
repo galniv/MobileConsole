@@ -87,7 +87,7 @@ angular.module('app.controllers', ['chart.js'])
   };
 }])
    
-.controller('usersCtrl', function($scope, $http, $rootScope, $ionicListDelegate) {
+.controller('usersCtrl', function($scope, $http, $rootScope, $ionicListDelegate, $ionicPopup) {
   function getKinveyHttpOptions() {
     return {
       headers: {
@@ -135,6 +135,40 @@ angular.module('app.controllers', ['chart.js'])
       $ionicListDelegate.closeOptionButtons();
     }).catch(function(error) {
       console.log('Error locking down user!', error)
+      $ionicListDelegate.closeOptionButtons();
+    });
+  }
+
+  $scope.verifyEmail = function(user) {
+    var options = getKinveyHttpOptions();
+    $http.post('https://baas.kinvey.com/rpc/' + $rootScope.currentEnv.id + '/' + encodeURIComponent(user.username) + '/user-email-verification-initiate', {}, options).then(function(response) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'Email verification',
+        template: 'Successfully sent verification email'
+      });
+
+      alertPopup.then(function(res) {
+        $ionicListDelegate.closeOptionButtons();
+      });
+    }).catch(function(error) {
+      console.log('Error resetting password!', error)
+      $ionicListDelegate.closeOptionButtons();
+    });
+  }
+
+  $scope.resetPassword = function(user) {
+    var options = getKinveyHttpOptions();
+    $http.post('https://baas.kinvey.com/rpc/' + $rootScope.currentEnv.id + '/' + encodeURIComponent(user.username) + '/user-password-reset-initiate ', {}, options).then(function(response) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'Password reset',
+        template: 'Successfully sent reset email'
+      });
+
+      alertPopup.then(function(res) {
+        $ionicListDelegate.closeOptionButtons();
+      });
+    }).catch(function(error) {
+      console.log('Error resetting password!', error)
       $ionicListDelegate.closeOptionButtons();
     });
   }
