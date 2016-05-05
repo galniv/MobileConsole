@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'chart.js', 'ngStorage', 'kinvey', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
+angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
 
 .run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', '$localStorage', 'QuickActionService', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService, $localStorage, QuickActionService) {
   $ionicPlatform.ready(function() {
@@ -67,18 +67,6 @@ angular.module('app', ['ionic', 'chart.js', 'ngStorage', 'kinvey', 'app.controll
   });
 }])
 
-
-
-.controller("ExampleController", function($scope) {
- 
-    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-    $scope.series = ['Series A', 'Series B'];
-    $scope.data = [
-        [65, 59, 80, 81, 56, 55, 40],
-        [28, 48, 40, 19, 86, 27, 90]
-    ];
- 
-});
 //function selects the desired behavior depending on whether the user is logged or not
 function determineBehavior($kinvey, $state, $rootScope, UserService, toState) {
   var activeUser = UserService.activeUser();
