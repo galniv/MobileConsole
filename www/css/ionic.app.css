@@ -9814,3 +9814,10 @@ a.button {
 
 .collab-add-button {
   margin-top: 5px; }
+
+.users .empty-state {
+  margin-top: 50px;
+  text-align: center; }
+
+.users .table-header {
+  font-weight: bold; }

@@ -1,3 +1,21 @@
 <ion-view style="" id="page6" title="Users">
-    <ion-content class="has-header" padding="true"></ion-content>
+  <ion-content class="has-header users" padding="true">
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="fetchUsers()"></ion-refresher>
+    <div ng-show="hasUsers">
+      <div class="row">
+        <div class="col table-header">Email</div>
+      </div>
+      <ion-list>
+        <ion-item collection-repeat="user in users" ng-class="(user._kmd.status.val) ? 'locked-down' : ''">
+          <i ng-show="user._kmd.status.val" class="icon ion-locked"></i>
+          {{ user.email }}
+          <ion-option-button ng-hide="user._kmd.status.val" class="button-assertive" ng-click="toggleLockdown(user)">Lockdown</ion-option-button>
+          <ion-option-button ng-show="user._kmd.status.val" class="button-energized" ng-click="toggleLockdown(user)">Unlock</ion-option-button>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div ng-hide="hasUsers" class="empty-state">
+      This environment currently has no users
+    </div>
+  </ion-content>
 </ion-view>

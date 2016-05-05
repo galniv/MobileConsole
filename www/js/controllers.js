@@ -87,14 +87,61 @@ angular.module('app.controllers', ['chart.js'])
   };
 }])
    
-.controller('usersCtrl', function($scope) {
+.controller('usersCtrl', function($scope, $http, $rootScope, $ionicListDelegate) {
+  function getKinveyHttpOptions() {
+    return {
+      headers: {
+        Authorization: 'Basic ' + window.btoa($rootScope.currentEnv.id + ':' + $rootScope.currentEnv.masterSecret)
+      }
+    }
+  }
 
+  $scope.fetchUsers = function() {
+    if ($rootScope.currentEnv) {
+      var options = getKinveyHttpOptions();
+      $http.get('https://baas.kinvey.com/user/' + $rootScope.currentEnv.id, options).then(function(response) {
+        $scope.users = response.data;
+        $scope.hasUsers = ($scope.users.length > 0);
+        $scope.$broadcast('scroll.refreshComplete');
+      }).catch(function(error) {
+        $scope.hasUsers = false;
+        $scope.users = [];
+        console.log('Error fetching users!', error)
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+    }
+  }
+
+  $scope.toggleLockdown = function(user) {
+    var options = getKinveyHttpOptions();
+    options.headers['Content-Type'] = 'application/json';
+    lockdown = true;
+    if (user._kmd.status && user._kmd.status.val === 'lockedDown') {
+      lockdown = false;
+    }
+    var body = {
+      userId: user._id,
+      setLockdownStateTo: lockdown
+    }
+    $http.post('https://baas.kinvey.com/rpc/' + $rootScope.currentEnv.id + '/lockdown-user', body, options).then(function(response) {
+      if (response.data.currentLockdownStatus) {
+        user._kmd.status = {
+          val: 'lockedDown'
+        };
+      }
+      else {
+       delete user._kmd.status;
+      }
+      $ionicListDelegate.closeOptionButtons();
+    }).catch(function(error) {
+      console.log('Error locking down user!', error)
+      $ionicListDelegate.closeOptionButtons();
+    });
+  }
+
+  $scope.fetchUsers();
 })
    
-.controller('dataLinksCtrl', function($scope) {
-
-})
-
 .controller ('menuCtrl', function($scope, $state, $stateParams, $rootScope, $localStorage, $ionicActionSheet) {
   // Triggered on a button click, or some other target
   $scope.showActionSheet = function() {

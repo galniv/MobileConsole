@@ -57,3 +57,18 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 .collab-add-button {
   margin-top: 5px;
 }
+
+.users {
+  .empty-state {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  .table-header {
+    font-weight: bold;
+  }
+
+  .locked-down {
+    
+  }
+}
