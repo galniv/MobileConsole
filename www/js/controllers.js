@@ -1,4 +1,4 @@
-angular.module('app.controllers', ['chart.js'])
+angular.module('app.controllers', ['chart.js', 'ngCordova'])
 
 .controller('appsCtrl', ['$scope', '$kinvey', '$state', function($scope, $kinvey, $state) {
   $scope.openAppDetails = function(app) {
@@ -247,7 +247,7 @@ angular.module('app.controllers', ['chart.js'])
 
       for (var i=0; i<numDays; i++){
         var day = new Date(startDate + i*24*60*60*1000).toDateString();
-        labels.push(day);
+        labels.push('');
         if (tempData[day] != null){
           data.push(tempData[day]);
         } else{
@@ -275,7 +275,7 @@ angular.module('app.controllers', ['chart.js'])
 
       for (var i=0; i<numDays; i++){
         var day = new Date(startDate + i*24*60*60*1000).toDateString();
-        labels.push(day);
+        labels.push('');
         if (tempData[day] != null){
           data.push(tempData[day]);
         } else{
@@ -290,8 +290,10 @@ angular.module('app.controllers', ['chart.js'])
     });
   }
 
-  $scope.renderUserChart();
-  $scope.renderAPIChart();   
+  $scope.renderUserChart().then(function(){
+    $scope.renderAPIChart();
+  });
+  
   
 }])
 
@@ -404,7 +406,29 @@ angular.module('app.controllers', ['chart.js'])
   };
 })
    
-.controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', function($scope, UserService, $localStorage) {
+.controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', '$cordovaTouchID', '$state', '$kinvey', function($scope, UserService, $localStorage, $cordovaTouchID, $state, $kinvey) {
+    $cordovaTouchID.checkSupport().then(function() {
+      $cordovaTouchID.authenticate("You must authenticate").then(function() {
+        //alert("Authentication was successful");
+        //do nothing
+      }, function(error) {
+        //could not authenticate, go away
+        var activeUser = $kinvey.User.getActiveUser();
+        var promise = activeUser.logout().then(
+          function () {
+            //Kinvey logout finished with success
+            $state.go('login');
+          },
+          function (error) {
+            //do nothing
+          }); 
+
+      });
+    }, function(error) {
+      //do nothing
+    });
+
+
   $scope.user = UserService.activeUser();
   $scope.lastViewedPages = $localStorage.lastViewedPages || false;
 
@@ -426,15 +450,16 @@ angular.module('app.controllers', ['chart.js'])
 
     var promise = activeUser.logout().then(
         function () {
-            //Kinvey logout finished with success
-            console.log("user logout");
-            $state.go('login');
+          //Kinvey logout finished with success
+          console.log("user logout");
+          $state.go('login');
         },
         function (error) {
-            //Kinvey logout finished with error
-            alert("Error logout: " + JSON.stringify(error));
+          //Kinvey logout finished with error
+          alert("Error logout: " + JSON.stringify(error));
     });
 }])
+
 
 function makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, method, path, body, updateEnvironment) {
   var url = 'https://auth.kinvey.com/oauth/validate?access_token=' + $kinvey.User.getActiveUser()._socialIdentity.kinveyAuth.access_token;
