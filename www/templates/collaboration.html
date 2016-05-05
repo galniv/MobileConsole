@@ -11,6 +11,7 @@
         <ion-list>
             <ion-item ng-repeat="admin in admins">{{ admin.email }} <ion-option-button class="button-assertive" ng-click="removeAdmin(admin)">Remove</ion-option-button></ion-item>
         </ion-list>
+        <button ng-click="addAdmin()" class="button button-outline button-positive button-small icon-left ion-plus collab-add-button">Add administrator</button>
         <div style="width: 300px; height: 2px;" class="spacer"></div>
         <h4 style="color: rgb(0, 0, 0);" id="collaboration-heading10">Collaborators</h4>
         <div style="color: rgb(0, 0, 0); font-size: 12px;" id="collaboration-markdown12">
@@ -19,6 +20,7 @@
         <ion-list style="">
             <ion-item ng-repeat="collaborator in collaborators">{{ collaborator.email }} <ion-option-button class="button-assertive" ng-click="removeCollab(collaborator)">Remove</ion-option-button></ion-item></ion-item>
         </ion-list>
+        <button ng-click="addCollab()" class="button button-outline button-positive button-small icon-left ion-plus collab-add-button">Add collaborator</button>
         <div ng-show="gotError" style="margin-top: 10px;">
             <ul class="errors">
                 <li ng-repeat="error in errors">

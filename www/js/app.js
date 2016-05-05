@@ -29,7 +29,7 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
       if (toState.name !== 'login') { 
         var courseAltered = determineBehavior($kinvey, $state, $rootScope, UserService, toState);
 
-        if (!courseAltered && ['signup', 'menu.mobileConsole'].indexOf(toState.name) == -1) {
+        if (!courseAltered && $rootScope.currentEnv && ['signup', 'menu.mobileConsole'].indexOf(toState.name) == -1) {
           if (!$localStorage.lastViewedPages) {
             $localStorage.lastViewedPages = [];
           }

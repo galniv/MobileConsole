@@ -227,8 +227,8 @@ angular.module('app.controllers', ['chart.js'])
 }])
    
 .controller('collaborationCtrl', function($scope, $http, $kinvey, $rootScope, $localStorage, $ionicPopup, $ionicListDelegate) {
-  var collabUrl = '/environments/' + $rootScope.currentEnv.id + '/collaboration/collaborators';
-  var adminUrl = '/environments/' + $rootScope.currentEnv.id + '/collaboration/admins';
+  var collabUrl = '/v2/environments/' + $rootScope.currentEnv.id + '/collaboration/collaborators';
+  var adminUrl = '/v2/environments/' + $rootScope.currentEnv.id + '/collaboration/admins';
   makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', collabUrl, null, false).then(function(collaborators) {
     $scope.collaborators = collaborators;
   });
@@ -236,23 +236,41 @@ angular.module('app.controllers', ['chart.js'])
     $scope.admins = admins;
   });
 
-  $scope.addAdmin = function(email) {
-    var body = {
-      email: email
-    }
-    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', adminUrl, body, false).then(function() {
-      makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', adminUrl, null, false).then(function(admins) {
+  $scope.addAdmin = function() {
+    $ionicPopup.prompt({
+      title: 'Add administrator',
+      template: 'Enter email address',
+      inputType: 'email',
+      inputPlaceholder: 'user@provider.com'
+    }).then(function(email) {
+      var body = {
+        email: email
+      }
+      var promise = makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', adminUrl, body, false);
+      promise = promise.then(function() {
+        return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', adminUrl, null, false);
+      });
+      promise = promise.then(function(admins) {
         $scope.admins = admins;
       });
     });
   }
 
-  $scope.addCollab = function(email) {
-    var body = {
-      email: email
-    }
-    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', collabUrl, body, false).then(function() {
-      makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', collabUrl, null, false).then(function(collaborators) {
+  $scope.addCollab = function() {
+    $ionicPopup.prompt({
+      title: 'Add collaborator',
+      template: 'Enter email address',
+      inputType: 'email',
+      inputPlaceholder: 'user@provider.com'
+    }).then(function(email) {
+      var body = {
+        email: email
+      }
+      var promise = makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'post', collabUrl, body, false);
+      promise = promise.then(function() {
+        return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', collabUrl, null, false);
+      });
+      promise = promise.then(function(collaborators) {
         $scope.collaborators = collaborators;
       });
     });
@@ -262,10 +280,12 @@ angular.module('app.controllers', ['chart.js'])
     var body = {
       email: admin.email
     }
-    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'delete', adminUrl, body, false).then(function(admins) {
-      if (admins) {
-        $scope.admins = admins;
-      }
+    var promise = makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'delete', adminUrl + '/' + admin.name, body, false);
+    promise = promise.then(function() {
+      return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', adminUrl, null, false);
+    });
+    promise = promise.then(function(admins) {
+      $scope.admins = admins;
       $ionicListDelegate.closeOptionButtons();
     });
   };
@@ -274,10 +294,12 @@ angular.module('app.controllers', ['chart.js'])
     var body = {
       email: collab.email
     }
-    makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'delete', collabUrl, body, false).then(function(collaborators) {
-      if (collaborators) {
-        $scope.collaborators = collaborators;
-      }
+    var promise = makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'delete', collabUrl + '/' + collab.name, body, false);
+    promise = promise.then(function() {
+      return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', collabUrl, null, false);
+    });
+    promise = promise.then(function(collaborators) {
+      $scope.collaborators = collaborators;
       $ionicListDelegate.closeOptionButtons();
     });
   };
