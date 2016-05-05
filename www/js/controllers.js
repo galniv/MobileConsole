@@ -147,53 +147,71 @@ angular.module('app.controllers', ['chart.js'])
 })
    
 .controller('environmentDashboardCtrl', ['$scope', '$kinvey', '$http', '$localStorage', '$rootScope', function($scope, $kinvey, $http, $localStorage, $rootScope) {
-  // var analyticsActiveUsers = $kinvey.DataStore.getInstance('analytics-activeusers', $kinvey.DataStoreType.Network);
 
-  // var query = new $kinvey.Query();
-  // query.equalTo('environmentId', $scope.currentEnv.id);
-
-  // analyticsActiveUsers.find(query).then(function(response) {
-  //   console.log(response);
-  // }).catch(function(error){
-  //   console.log(error);
-  // });
   var numDays = 15;
   var now = new Date().getTime();
   var startDate = new Date(now - numDays*24*60*60*1000).getTime();
 
-  var url = '/environments/' + $rootScope.currentEnv.id + '/analytics?metric=active-users&granularity=hourly&from=' + startDate + '&to=' + now;
 
-  makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', url, null, false).then(function(response) {
-    console.log(response);
-    var labels = [];
-    var data = [];
-    var tempData = {};
-    for (var i=0; i<response.length; i++){
-      var t = response[i].t;
-      tempData[new Date(t).toDateString()] = response[i].v;
-    }
-
-    for (var i=0; i<numDays; i++){
-      var day = new Date(startDate + i*24*60*60*1000).toDateString();
-      labels.push(day);
-      if (tempData[day] != null){
-        data.push(tempData[day]);
-      } else{
-        data.push(0);
+  $scope.renderUserChart = function (){
+    var url = '/environments/' + $rootScope.currentEnv.id + '/analytics?metric=active-users&granularity=hourly&from=' + startDate + '&to=' + now;
+    return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', url, null, false).then(function(response) {
+      var labels = [];
+      var data = [];
+      var tempData = {};
+      for (var i=0; i<response.length; i++){
+        var t = response[i].t;
+        tempData[new Date(t).toDateString()] = response[i].v;
       }
-    }
 
-    //$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-    $scope.labels = labels;
-    $scope.series = ['Daily Active Users'];
-    $scope.data = [data];
-    // $scope.data = [
-    //     [65, 59, 80, 81, 56, 55, 40],
-    //     [43, 34 ,23, 21, 54, 23, 65]
-    // ];    
+      for (var i=0; i<numDays; i++){
+        var day = new Date(startDate + i*24*60*60*1000).toDateString();
+        labels.push(day);
+        if (tempData[day] != null){
+          data.push(tempData[day]);
+        } else{
+          data.push(0);
+        }
+      }
 
-  });
+      $scope.userlabels = labels;
+      $scope.userseries = ['Daily Active Users'];
+      $scope.userdata = [data];
 
+    });
+  }
+
+  $scope.renderAPIChart = function() {
+    var url = '/environments/' + $rootScope.currentEnv.id + '/analytics?metric=api-calls&granularity=hourly&from=' + startDate + '&to=' + now;
+    return makeKapiRequest($scope, $kinvey, $http, $localStorage, $rootScope, 'get', url, null, false).then(function(response) {
+      var labels = [];
+      var data = [];
+      var tempData = {};
+      for (var i=0; i<response.length; i++){
+        var t = response[i].t;
+        tempData[new Date(t).toDateString()] = response[i].v;
+      }
+
+      for (var i=0; i<numDays; i++){
+        var day = new Date(startDate + i*24*60*60*1000).toDateString();
+        labels.push(day);
+        if (tempData[day] != null){
+          data.push(tempData[day]);
+        } else{
+          data.push(0);
+        }
+      }
+
+      $scope.apilabels = labels;
+      $scope.apiseries = ['Daily API Calls'];
+      $scope.apidata = [data];
+
+    });
+  }
+
+  $scope.renderUserChart();
+  $scope.renderAPIChart();   
+  
 }])
 
 .controller('environmentSettingsCtrl', ['$scope', '$http', '$kinvey', '$rootScope', '$localStorage', '$ionicPopup', function($scope, $http, $kinvey, $rootScope, $localStorage, $ionicPopup) {
