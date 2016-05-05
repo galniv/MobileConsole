@@ -5,7 +5,15 @@
 	            Daily Active Users
 	        </div>
 	        <div class="item item-text-wrap">
-	            <canvas id="Line" class="chart chart-line" data="data" labels="labels" legend="true" series="series" options="{showTooltips: false}"></canvas>
+	            <canvas id="Line" class="chart chart-line" data="userdata" labels="userlabels" legend="true" series="userseries" options="{showTooltips: false}"></canvas>
+	        </div>
+	    </div>
+	   	<div class="card">
+	        <div class="item item-divider">
+	            API Calls
+	        </div>
+	        <div class="item item-text-wrap">
+	            <canvas id="Line" class="chart chart-line" data="apidata" labels="apilabels" legend="true" series="apiseries" options="{showTooltips: false}"></canvas>
 	        </div>
 	    </div>
 	</ion-content>
