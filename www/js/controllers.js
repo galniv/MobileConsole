@@ -433,7 +433,7 @@ angular.module('app.controllers', ['chart.js', 'ngCordova'])
   $scope.lastViewedPages = $localStorage.lastViewedPages || false;
 
   $scope.navigate = function(pageRecord) {
-
+    $state.go(pageRecord.state);
   };
 }])
  
