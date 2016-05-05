@@ -375,6 +375,7 @@ angular.module('app.controllers', ['chart.js', 'ngCordova'])
         },
         function (error) {
           //Kinvey logout finished with error
+          $state.go('login');
           alert("Error logout: " + JSON.stringify(error));
     });
 }])
