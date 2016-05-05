@@ -193,6 +193,7 @@ angular.module('app.controllers', ['chart.js', 'ngCordova'])
       buttonClicked: function(index) {
         $rootScope.currentEnv = $rootScope.currentApp.environments[index];
         $localStorage.currentEnv = $rootScope.currentEnv;
+        //$scope.$digest();
         return true;
       }
     });
