@@ -2,7 +2,7 @@ angular.module('app.controllers', ['chart.js'])
 
 .controller('appsCtrl', ['$scope', '$kinvey', '$state', function($scope, $kinvey, $state) {
   $scope.openAppDetails = function(app) {
-    $state.go('menu.appInformation', { app : app });
+    $state.go('appInformation', { app : app });
   };
 
   var appCollection = $kinvey.DataStore.getInstance('apps');

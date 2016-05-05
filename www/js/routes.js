@@ -67,16 +67,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menu.appInformation', {
+  .state('appInformation', {
     url: '/app',
     cache: false,
     parameters: ['app'],
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/appInformation.html',
-        controller: 'appInformationCtrl'
-      }
-    },
+    templateUrl: 'templates/appInformation.html',
+    controller: 'appInformationCtrl',
     params: {
       app: null
     }
