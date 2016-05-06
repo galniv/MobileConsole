@@ -407,29 +407,7 @@ angular.module('app.controllers', ['chart.js', 'ngCordova'])
   };
 })
    
-.controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', '$cordovaTouchID', '$state', '$kinvey', function($scope, UserService, $localStorage, $cordovaTouchID, $state, $kinvey) {
-    $cordovaTouchID.checkSupport().then(function() {
-      $cordovaTouchID.authenticate("You must authenticate").then(function() {
-        //alert("Authentication was successful");
-        //do nothing
-      }, function(error) {
-        //could not authenticate, go away
-        var activeUser = $kinvey.User.getActiveUser();
-        var promise = activeUser.logout().then(
-          function () {
-            //Kinvey logout finished with success
-            $state.go('login');
-          },
-          function (error) {
-            //do nothing
-          }); 
-
-      });
-    }, function(error) {
-      //do nothing
-    });
-
-
+.controller('mobileConsoleCtrl', ['$scope', 'UserService', '$localStorage', '$state', '$kinvey', function($scope, UserService, $localStorage, $cordovaTouchID, $state, $kinvey) {
   $scope.user = UserService.activeUser();
   $scope.lastViewedPages = $localStorage.lastViewedPages || false;
 

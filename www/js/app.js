@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.routes', 'app.services', 'app.directives'])
 
-.run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', '$localStorage', 'QuickActionService', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService, $localStorage, QuickActionService) {
+.run(['$ionicPlatform', '$kinvey', '$rootScope', '$state', 'UserService', '$localStorage', 'QuickActionService', '$cordovaTouchID', '$q', function ($ionicPlatform, $kinvey, $rootScope, $state, UserService, $localStorage, QuickActionService, $cordovaTouchID, $q) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -22,13 +22,13 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
 
     QuickActionService.configure();
 
-    determineBehavior($kinvey, $state, $rootScope, UserService);
+    determineBehavior($kinvey, $state, $rootScope, UserService, null, $cordovaTouchID, $q);
+  });
 
-    // setup the stateChange listener
-    $rootScope.$on("$stateChangeStart", function (event, toState) {
-      if (toState.name !== 'login') { 
-        var courseAltered = determineBehavior($kinvey, $state, $rootScope, UserService, toState);
-
+  // setup the stateChange listener
+  $rootScope.$on("$stateChangeStart", function (event, toState) {
+    if (toState.name !== 'login') {
+      determineBehavior($kinvey, $state, $rootScope, UserService, toState, $cordovaTouchID, $q).then(function() {
         if (!courseAltered && $rootScope.currentEnv && ['signup', 'menu.mobileConsole', 'logout', 'menu'].indexOf(toState.name) == -1) {
           if (!$localStorage.lastViewedPages) {
             $localStorage.lastViewedPages = [];
@@ -68,26 +68,39 @@ angular.module('app', ['ionic', 'ngStorage', 'kinvey', 'app.controllers', 'app.r
               $localStorage.lastViewedPages.shift();
             }
           }
-
           
           QuickActionService.configure();
         }
-      }
-    });
-
+      }).catch(function(){
+        // A rejected promise means the state change wasn't interrupted; nothing more to do
+      });
+    }
   });
 }])
 
 //function selects the desired behavior depending on whether the user is logged or not
-function determineBehavior($kinvey, $state, $rootScope, UserService, toState) {
+function determineBehavior($kinvey, $state, $rootScope, UserService, toState, $cordovaTouchID, $q) {
   var activeUser = UserService.activeUser();
 
   if ((activeUser === null)) {
     $state.go('login');
-  } else if (($state.current.name === 'login') && (activeUser !== null) && (!toState || (toState.name !== 'menu.mobileConsole'))) {
-    $state.go('menu.mobileConsole');
+  } else if ((toState !== null) && ($state.current.name === 'login') && (activeUser !== null)) {
+    $cordovaTouchID.checkSupport().then(function() {
+      $cordovaTouchID.authenticate('Please authenticate').then(function() {
+        return $q.resolve()
+      }, function(error) {
+        // Could not authenticate -- go away
+        $kinvey.User.getActiveUser().logout().then(function () {
+          // Kinvey logout finished with success
+          $state.go('login');
+          return $q.reject()
+        });
+      });
+    }).catch(function(error) {
+      return $q.resolve()
+    });
   } else {
-    return false;
+    return $q.resolve()
   }
-  return true;
+  return $q.reject()
 }
